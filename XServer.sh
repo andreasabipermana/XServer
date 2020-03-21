@@ -265,10 +265,10 @@ echo " [16]  Mengganti Hostname                                        ";
 echo " [17]  Reboot                                                    ";
 echo " [18]  Exit                                                      ";
 echo "=================================================================";
-read -p " Masukkan Nomor Pilihan Anda antara [1 - 21] : " choice;
+read -p " Masukkan Nomor Pilihan Anda antara [1 - 18] : " choice;
 echo "";
 case $choice in
-1)  if [ -z "$(sudo ls -A /etc/default/grub)" ]; then
+1)  if [ -z "$(ls -A /etc/default/grub)" ]; then
         echo "Grub tidak terdeteksi"
     else
         echo "Mengubah nama interface menjadi eth"
