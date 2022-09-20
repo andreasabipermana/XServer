@@ -236,12 +236,12 @@ while [[ $again == 'Y' ]] || [[ $again == 'y' ]];
 do
 clear
 echo "=================================================================";
-echo " LinuxSolo XServer Debian Buster                                 ";
-echo " Progammer : Andreas Abi P. linuxsolo.or.id                      ";
-echo " Version 0.3 - 27/02/2020                                        ";
+echo " XServer Debian 11                                ";
+echo " Progammer : Andreas Abi P.                       ";
+echo "                                     ";
 echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=";
 echo " Installasi server & konfigurasi                                 ";
-echo " [1]  Install LinuxSolo XServer                                  ";
+echo " [1]  Installasi tools yang dibutuhkan                                  ";
 echo " [2]  Setting IP Address                                         ";
 echo " [3]  Setting Repository Indonesia                               ";
 echo " [4]  Install Apache2, Mysql-server                              ";
@@ -249,7 +249,7 @@ echo " [5]  Install PHP                                                ";
 echo " [6]  Install PHPMyadmin                                         ";
 echo " [7]  Setting user dan direktori Web                             ";
 echo " [8]  Install Codeigniter                                        ";
-echo " [9]  Install Laravel                                            ";
+echo " [9]  Install Codeigniter 4                                            ";
 echo " [10]  Install Wordpress                                         ";
 echo " =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-";
 echo " Edit Konfigurasi                                                ";
@@ -301,55 +301,50 @@ case $choice in
 3)  if [ -z "$(ls -l /etc/apt/sources.list)" ]; then
         echo "Tidak terdeteksi ada /etc/apt/sources.list"
     else
-        echo "Backup file /etc/apt/sources.list"
-        if [ -z "$(ls -l /etc/apt/sources.list.ori)" ]; then
-            mv /etc/apt/sources.list /etc/apt/sources.list.ori
-        else
-            mv /etc/apt/sources.list /etc/apt/sources.list.bak
-        fi
-        sleep 4
+        cp /etc/apt/sources.list /etc/apt/sources.list.bak
+        sleep 2
         clear
         echo " =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-";
         echo " Daftar Server Repository                                        ";
-        echo " [1] Kambing UI                                                  ";
-        echo " [2] Kebo VLSM                                                   ";
+        echo " [1] Kebo Pens                                                  ";
+        echo " [2] Klas Surabaya                                                   ";
         echo " [3] Data Utama Surabaya                                         ";
-        echo " [4] Mirror Unej                                                 ";
-        echo " [5] Repositori Resmi Debian 10                                  ";
+        echo " [4] Ubaya                                               ";
+        echo " [5] Repositori Resmi Debian 11                                  ";
         echo " [6] Kembali ke Menu Utama                                       ";
         echo "=================================================================";
         read -p " Masukkan Nomor Pilihan Anda antara [1 - 5] : " prepo;
         echo "";
         case $prepo in
         1) cat <<EOF > /etc/apt/sources.list
-deb http://kambing.ui.ac.id/debian/ buster main contrib non-free
-deb http://kambing.ui.ac.id/debian/ buster-updates main contrib non-free
-deb http://kambing.ui.ac.id/debian-security/ buster/updates main contrib non-free 
+deb http://kebo.pens.ac.id/debian bullseye main contrib non-free
+deb http://kebo.pens.ac.id/debian bullseye-updates main contrib non-free
+deb http://kebo.pens.ac.id/debian-security bullseye-security main contrib non-free
 EOF
         ;;
         2) cat <<EOF > /etc/apt/sources.list
-deb http://kebo.vlsm.org/debian/ buster main contrib non-free
-deb http://kebo.vlsm.org/debian/ buster-updates main contrib non-free
-deb http://kebo.vlsm.org/debian-security/ buster/updates main contrib non-free  
+deb https://buaya.klas.or.id/debian bullseye main contrib non-free
+deb https://buaya.klas.or.id/debian bullseye-updates main contrib non-free
+deb https://buaya.klas.or.id/debian-security bullseye-security main contrib non-free 
 EOF
         ;;
         3) cat <<EOF > /etc/apt/sources.list
-deb http://kartolo.sby.datautama.net.id/debian/ buster main contrib non-free
-deb http://kartolo.sby.datautama.net.id/debian/ buster-updates main contrib non-free
-deb http://kartolo.sby.datautama.net.id/debian-security/ buster/updates main contrib non-free  
+deb http://kartolo.sby.datautama.net.id/debian bullseye main contrib non-free
+deb http://kartolo.sby.datautama.net.id/debian bullseye-updates main contrib non-free
+deb http://kartolo.sby.datautama.net.id/debian-security bullseye-security main contrib non-free   
 EOF
         ;;
         4) cat <<EOF > /etc/apt/sources.list
-deb http://mirror.unej.ac.id/debian/ buster main contrib non-free
-deb http://mirror.unej.ac.id/debian/ buster-updates main contrib non-free
-deb http://mirror.unej.ac.id/debian-security/ buster/updates main contrib non-free 
+deb https://suro.ubaya.ac.id/debian bullseye main contrib non-free
+deb https://suro.ubaya.ac.id/debian bullseye-updates main contrib non-free
+deb https://suro.ubaya.ac.id/debian-security bullseye-security main contrib non-free 
 EOF
         ;;
         5) cat <<EOF > /etc/apt/sources.list
-deb http://deb.debian.org/debian buster main contrib non-free
-deb-src http://deb.debian.org/debian buster main contrib non-free
-deb http://security.debian.org/debian-security buster/updates main contrib
-deb-src http://security.debian.org/debian-security buster/updates main contrib
+deb http://deb.debian.org/debian bullseye main contrib non-free
+deb http://deb.debian.org/debian bullseye-updates main contrib non-free
+deb http://deb.debian.org/debian bullseye-backports main contrib non-free
+deb http://security.debian.org/debian-security/ bullseye-security main contrib non-free
 EOF
         ;;
         6)  sleep 2
@@ -371,13 +366,11 @@ EOF
     then
         apt -y install apache2
         echo "Apache2 sudah diinstall"
-        echo "Menginstall MYSQL Server"
+        echo "Menginstall MariaDB Server"
         apt -y install gnupg
-        wget https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb
-        dpkg -i mysql-apt-config_0.8.13-1_all.deb
         wait $!
         apt update
-        apt -y install mysql-server
+        apt -y install mariadb-server
         wait $!
         mysql_secure_installation
         wait $!
@@ -399,16 +392,15 @@ EOF
     echo  ""
     if [[ ! $REPLY =~ ^[Nn]$ ]]
     then
-        read -p "Apakah anda mau mau install PHP bawaan Debian 10? ( PHP 7.3 ) y/n :" -n 1 -r
+        read -p "Apakah anda mau mau install PHP bawaan Debian 11? ( PHP 7.4 ) y/n :" -n 1 -r
         echo  ""
         if [[ ! $REPLY =~ ^[Nn]$ ]]; then
-            apt -y install php7.3 wget php7.3-cli php7.3-zip php7.3-common php7.3-fpm php7.3-cgi php7.3-xml php7.3-gd php7.3-mysqli php7.3-mbstring php7.3-gettext libapache2-mod-php7.3 php7.3-common php7.3-mysql 
-            echo "Berhasil menginstall PHP 7.3"
+            apt -y install php wget php-cli php-zip php-common php-fpm php-cgi php-xml php-gd php-mysqli php-mbstring libapache2-mod-php php-common php-mysql php-curl php-intl 
+            echo "Berhasil menginstall PHP 7.4"
         else
-            apt install -y curl wget gnupg2 ca-certificates lsb-release apt-transport-https
-            wget https://packages.sury.org/php/apt.gpg 
-            apt-key add apt.gpg
-            echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php7.list
+            apt-get -y install apt-transport-https lsb-release ca-certificates curl
+            curl -sSLo /usr/share/keyrings/deb.sury.org-php.gpg https://packages.sury.org/php/apt.gpg 
+            sh -c 'echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
             apt update
             read -p 'Berapa jumlah versi php yang akan diinstall ?: ' choose;
             echo "-------------------------------------------------------------------------------"
@@ -416,8 +408,8 @@ EOF
             do
             read -p "Masukan Versi PHP ke $i: " vphp;
                 echo "Install php$vphp"
-                apt install -y php$vphp wget php$vphp-cli php$vphp-zip php$vphp-common php$vphp-fpm php$vphp-cgi php$vphp-xml php$vphp-gd php$vphp-mysqli php$vphp-mbstring php$vphp-gettext libapache2-mod-php$vphp php$vphp-common php$vphp-mysql 
-                apt install libapache2-mod-fcgid
+                apt install -y php$vphp wget php$vphp-cli php$vphp-zip php$vphp-common php$vphp-fpm php$vphp-cgi php$vphp-xml php$vphp-gd php$vphp-mysqli php$vphp-mbstring libapache2-mod-php$vphp php$vphp-common php$vphp-mysql php$vphp-curl php$vphp-intl
+                apt install -y libapache2-mod-fcgid
                 a2enmod actions fcgid alias proxy_fcgi
                 echo "Install Module php$vphp"    
             done            
@@ -425,80 +417,7 @@ EOF
     fi
     ;;
 6)  echo "Mendownload PHPMyadmin versi terbaru"
-    DATA="$(wget https://www.phpmyadmin.net/home_page/version.txt -q -O-)"
-    URL="$(echo $DATA | cut -d ' ' -f 3)"
-    VERSION="$(echo $DATA | cut -d ' ' -f 1)"
-    wget https://files.phpmyadmin.net/phpMyAdmin/${VERSION}/phpMyAdmin-${VERSION}-english.tar.gz
-    echo "Instalasi PHPMyadmin"
-    tar xvf phpMyAdmin-${VERSION}-english.tar.gz > /dev/null 2>&1
-    mv phpMyAdmin-*/ /usr/share/phpmyadmin
-    mkdir -p /var/lib/phpmyadmin/tmp
-    chown -R www-data:www-data /var/lib/phpmyadmin
-    mkdir /etc/phpmyadmin/
-    echo "Konfigurasi PHPMyadmin"
-    cp /usr/share/phpmyadmin/config.sample.inc.php  /usr/share/phpmyadmin/config.inc.php
-    randomBlowfishSecret=$(openssl rand -base64 32)
-    sed -i "s|cfg\['blowfish_secret'\] = ''|cfg\['blowfish_secret'\] = '$randomBlowfishSecret'|" /usr/share/phpmyadmin/config.inc.php
-    echo "\$cfg['TempDir'] = '/var/lib/phpmyadmin/tmp';" >> /usr/share/phpmyadmin/config.inc.php
-    cat <<EOF > /etc/apache2/conf-enabled/phpmyadmin.conf
-Alias /phpmyadmin /usr/share/phpmyadmin
-
-<Directory /usr/share/phpmyadmin>
-Options SymLinksIfOwnerMatch
-DirectoryIndex index.php
-
-<IfModule mod_php5.c>
-    <IfModule mod_mime.c>
-        AddType application/x-httpd-php .php
-    </IfModule>
-    <FilesMatch ".+\.php$">
-        SetHandler application/x-httpd-php
-    </FilesMatch>
-
-    php_value include_path .
-    php_admin_value upload_tmp_dir /var/lib/phpmyadmin/tmp
-    php_admin_value open_basedir /usr/share/phpmyadmin/:/etc/phpmyadmin/:/var/lib/phpmyadmin/:/usr/share/php/php-gettext/:/usr/share/php/php-php-gettext/:/usr/share/javascript/:/usr/share/php/tcpdf/:/usr/share/doc/phpmyadmin/:/usr/share/php/phpseclib/
-    php_admin_value mbstring.func_overload 0
-</IfModule>
-<IfModule mod_php.c>
-    <IfModule mod_mime.c>
-        AddType application/x-httpd-php .php
-    </IfModule>
-    <FilesMatch ".+\.php$">
-        SetHandler application/x-httpd-php
-    </FilesMatch>
-
-    php_value include_path .
-    php_admin_value upload_tmp_dir /var/lib/phpmyadmin/tmp
-    php_admin_value open_basedir /usr/share/phpmyadmin/:/etc/phpmyadmin/:/var/lib/phpmyadmin/:/usr/share/php/php-gettext/:/usr/share/php/php-php-gettext/:/usr/share/javascript/:/usr/share/php/tcpdf/:/usr/share/doc/phpmyadmin/:/usr/share/php/phpseclib/
-    php_admin_value mbstring.func_overload 0
-</IfModule>
-
-</Directory>
-
-# Authorize for setup
-<Directory /usr/share/phpmyadmin/setup>
-<IfModule mod_authz_core.c>
-    <IfModule mod_authn_file.c>
-        AuthType Basic
-        AuthName "phpMyAdmin Setup"
-        AuthUserFile /etc/phpmyadmin/htpasswd.setup
-    </IfModule>
-    Require valid-user
-</IfModule>
-</Directory>
-
-# Disallow web access to directories that don't need it
-<Directory /usr/share/phpmyadmin/templates>
-Require all denied
-</Directory>
-<Directory /usr/share/phpmyadmin/libraries>
-Require all denied
-</Directory>
-<Directory /usr/share/phpmyadmin/setup/lib>
-Require all denied
-</Directory>
-EOF
+    apt install phpmyadmin -y
     echo "ServerName localhost" >> /etc/apache2/apache2.conf
     echo "Cek Konfigurasi apache2"
     apache2ctl configtest
@@ -521,7 +440,7 @@ EOF
     [ $? -eq 0 ]; echo "User $user berhasil dibuat" || "gagal"
     echo "Mengatur permission pada folder home"
     chown -R $user:$group $home
-    usermod web -aG www-data
+    usermod -aG www-data $user
     echo "Mengatur apache2"
     cat <<EOF >> /etc/apache2/apache2.conf
 <Directory $home>
@@ -535,8 +454,8 @@ EOF
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
     DocumentRoot $homeweb
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
+    ErrorLog \${APACHE_LOG_DIR}/error.log
+    CustomLog \${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 EOF
     echo "Cek Konfigurasi apache2"
@@ -607,8 +526,12 @@ EOF
     service apache2 restart    
     ;;  
 9)  read -p "Masukkan user web : " userweb
+    read -p "Masukkan direktory user : " diruser
     read -p "Masukkan direktory web : " dirweb
-    read -p "Masukkan nama database untuk Laravel :" nama_db
+    read -p "Masukkan nama aplikasi :" nama_app
+    read -p "Masukkan URL Web :" url_web
+    read -p "Masukkan hostname database :" host_db
+    read -p "Masukkan nama database untuk Codeigniter 4 :" nama_db
     read -p "Masukkan password root MYSQL : " rootpasswd
     echo ""
     read -p "Apakah anda mau membuat user baru untuk mysql y/n:" -n 1 -r
@@ -634,37 +557,30 @@ EOF
     service mysql stop
     wait $!
     echo "Service berhasil dihentikan"
+    echo "Service berhasil dihentikan"
     echo "Install Paket yang dibutuhkan"
     apt -y install curl git unzip
-    echo "Mendownload Laravel"
-    cd /tmp
-    git clone https://github.com/laravel/laravel $dirweb/laravel
-    cd $dirweb
     echo "Menginstall Composer"
-    curl -sS https://getcomposer.org/installer -o composer-setup.php
+    apt install -y composer
     wait $!
-    php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-    wait $!
-    cd $dirweb/laravel
-    cp .env.example .env
-    chown -R $userweb:www-data $dirweb/laravel
-    chmod -R 775 $dirweb/laravel
-    sleep 10
-    sync; echo 1 > /proc/sys/vm/drop_caches
-    echo "Menginstall Laravel"
-    cd $dirweb/laravel
-    # su -c 'composer install' $userweb > /dev/null 2>&1
-    su -c 'composer install' $userweb
-    echo "Mengkonfigurasi Laravel"
-    sed -i "s|DB_DATABASE=laravel|DB_DATABASE=${nama_db}|" .env
-    sed -i "s|DB_USERNAME=root|DB_USERNAME=${user_db}|" .env
-    sed -i "s|DB_PASSWORD=|DB_PASSWORD=${pass_db}|" .env
-    su -c "php artisan key:generate" $userweb
+    su -c "composer create-project -d ${diruser} codeigniter4/appstarter ${diruser}/${nama_app}" $userweb
+    cd $diruser/$nama_app
+    echo "Mengkonfigurasi CodeIgniter 4"
+    cp env .env
+    sed -i "s|# database.default.hostname = localhost|database.default.hostname = ${host_db}|" .env
+    sed -i "s|# database.default.database = ci4|database.default.database = ${nama_db}|" .env
+    sed -i "s|# database.default.username = root|database.default.username = ${user_db}|" .env
+    sed -i "s|# database.default.password = root|database.default.password = ${pass_db}|" .env
+    sed -i "s|public \$baseURL = 'http://localhost:8080/';|public \$baseURL = '${url_web}';|" app/Config/App.php
+    su -c "ln -s $diruser/$nama_app/public $dirweb" abipermana
+    chown -R $userweb:www-data $diruser/$nama_app
+    chmod -R 775 $diruser/$nama_app
+    sleep 1
     service apache2 start
     wait $!
     service mysql start
     wait $!
-    echo "Laravel Berhasil Diinstall :)"
+    echo "CodeIgniter 4 Berhasil Diinstall :)"
     ;;
 10) read -p "Masukkan user web : " userweb
     read -p "Masukkan direktory web : " dirweb
